@@ -32,9 +32,9 @@ def getequalantWords(tokens):
         for key in tokens:
             if len(word) < len(key):
                 if len(word) > 4:
-                    search_word_part = word[0:2]
+                    search_word_part = word[0:-2]
                 elif len(word) == 3:
-                    search_word_part = word[0:1]
+                    search_word_part = word[0:-1]
                 else:
                     search_word_part = word
                 if search_word_part in key:
@@ -52,15 +52,23 @@ def getequalantWords(tokens):
 
 tokens = getDataFromFile()
 tokens = getequalantWords(tokens)
-for word in tokens:
-    for key in tokens:
-        w_hash =  tokens[key]
-        for w in w_hash
-            if len(word) > len(w):
-                
 
-#print "Word %s == %s " %(key,  len(tokens[key]))
+li ={} 
+word_keys = tokens.keys()
+for key in tokens:
+    words = tokens[key]
+    for word in words:
+        if word in word_keys:
+            li[word] = len(word)
 
+for key in li:
+    del tokens[key]
+
+json_hash = {}
+json_hash["words"] = tokens
+file = open('words.json', 'w+')
+file.write(json.dumps(json_hash))
+file.close()
 
 
 
