@@ -22,11 +22,11 @@ $words_data = json_decode($contents, true);
 
 $words = $words_data["words"];
 foreach ($words as $key_word => $data){
-    echo "$key_word <br>";
+    echo "$key_word [";
     foreach ($data as $key => $value){
     echo "$key , ";
     }
-    echo "<br>";
+    echo "]<br>";
 }
 
 ?>
