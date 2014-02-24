@@ -1,0 +1,12 @@
+Install Dependencies:
+
+1.Install python asterisk.
+pip install py-Asterisk
+pip install gevent-socketio
+pip install psutil
+pip install fysom
+
+2.Edit sample conf (py-asterisk.conf) as needed and copy  to /etc/py-asterisk.conf 
+
+3. Run ami-proxy.py under supervise
+4. run pounz-events-deamon under supervise
