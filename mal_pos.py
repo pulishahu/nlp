@@ -57,7 +57,7 @@ def log_write(datasource, murl, datalength, i):
 
 
 def createDataJson(raw, url):
-    
+
     raw = raw.read()
     raw  = nltk.clean_html(raw)
     tokens = raw.decode('utf8')
@@ -149,11 +149,38 @@ def addToCorp(tokens):
     file.write(json.dumps(json_hash))
     file.close()
 
+
+def findStem():
+
+    old_tokens = {}
+    try:
+        with open("words.json") as json_file:
+            if json_file:
+                json_data = json.load(json_file)
+                old_tokens =  json_data.get("words")
+    except:
+        print "Exception on words file read."
+
+    tokens = old_tokens;
+
+
+def test():
+
+    table = {}
+    #table["test"] = u'\u0D05\u0D35\u0D28\u0D4D'
+    table["test"] = u'\u0D05\u0D35\u0D7B'
+
+    file = open('test.json', 'w+')
+    file.write(json.dumps(table))
+    file.close()
+
+test()
+
 #source_encoding = "iso-8859-1"
 #url = "http://www.mathrubhumi.com/story.php?id=429181"
 #createDataJson(url)
 
-
+"""
 
 print "\n\n\n\n"
 print "================================"
@@ -201,6 +228,8 @@ for i in range(start_point, 1649000):
         tokens = cleanupWords(tokens)
         addToCorp(tokens)
 
+
+"""
 
 """
 for key in tokens:

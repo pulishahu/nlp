@@ -8,6 +8,18 @@ function getWords(){
     return $contents;
 }
 
+function gettest(){
+
+    $filename = "test.json";
+    $handle = fopen($filename, "r");
+    $contents = fread($handle, filesize($filename));
+    fclose($handle);
+    return $contents;
+}
+
+$testdata = gettest();
+$testdata = json_decode($testdata, true);
+
 $contents = getWords();
 $words_data = json_decode($contents, true);
 ?>
@@ -19,6 +31,13 @@ $words_data = json_decode($contents, true);
 <body>
 
 <?php
+
+
+foreach($testdata as $key => $value){
+
+    echo "<br> $key <br> $value<br><br>";
+}
+
 
 $words = $words_data["words"];
 foreach ($words as $key_word => $data){
