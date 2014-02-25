@@ -6,11 +6,16 @@ if($_POST["text"]){
     file_write($_POST["text"]);
 }
 
+
+if($_POST["tags"]){
+    $tags_element = $_POST["tags"];
+}
+
 $contents = getWords();
 $words_data = json_decode($contents, true);
 $tags = $words_data["tags"];
 $raw_text = $words_data["para"];
-
+$raw_text = getPointedText($raw_text, $tags_element);
 
 include "header.php";
 ?>
@@ -33,15 +38,26 @@ include "header.php";
 
 <!--Sorted Words -->
 <div><div class='container'>
+<form role="form" method="POST">
+<button type="submit" class="btn btn-default">Submit</button>
+<div class="form-group">
+
 <?
 
 $words = getWordSort($tags);
 echo "<ol>";
 foreach($words as $key => $data){
-echo "<li><h4>$key<small>[{$data[0]}] ({$data[1]}) </small><h4></li>";
+    echo "<li>";
+    echo "<div class='checkbox'><label><input type='checkbox' name='tags[]' value='$key'>";
+    echo "<h4>$key<small>[{$data[0]}] ({$data[1]}) </small><h4>";
+    echo "</label></div>";
+    echo "</li>";
 }    
 echo "</ol>";
 ?>
+</form>
+</div>
+
 </div></div>
 <!--sort end -->
 
@@ -49,6 +65,10 @@ echo "</ol>";
 
 <div class="col-md-8">
 <?
+
+echo "<div class='section'><div class='container'>";
+echo "<h5>$raw_text</h5>";
+echo "</div></div>";
 
 $tag_str = getTaggedSentence($tags);
 echo "<div class='section'><div class='container'>";

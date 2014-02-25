@@ -48,30 +48,38 @@ sentence = "Many local level and area-level committees of the party were shaken 
 
 #POS_LIST = {"NN":"NOUN", VERB, ADJ, ADV}
 
-print wn.synsets("dog", "VERB")
+#print wn.synsets("dog", "VERB")
 print "\n\n"
 
-"""
 datasource = urlopen("raw_text.txt").read()
 sentence  = nltk.clean_html(datasource)
 sentence = sentence.decode('utf8')
-"""
+
 tokens = nltk.word_tokenize(sentence)
 tagged = nltk.pos_tag(tokens)
 #entities = nltk.chunk.ne_chunk(tagged)
 #print tokens
+
+syn = {}
+for key in tagged:
+    syn[key[0]] = getSynonym(key[0], key[1])
+
 json_hash = {}
 json_hash["para"] = sentence
 json_hash["tags"] = tagged
+json_hash["syn"] = syn
 
-
-#for key in tagged:
-    #print wn.synsets(key[0])
-
-"""
 FILE = open("corp.json", "w+")
 FILE.write(json.dumps(json_hash))
 FILE.close()
-"""
 #print json_hash
 #print tagged
+
+
+"""
+Egypt will remain a military dictatorship indefinitely.
+Egypt is as far away from the revolutionary promise of Tahrir Square as it was in November 2010 when Mubarak staged perhaps the most fraudulent parliamentary election since they began in the late 1970s.
+Just as Egypt's political system before the January 25 uprising was rigged in favor of Mubarak and his constituents, the Brothers sought to stack the new order in their favor, and today's winners will build a political system that reflects their interests.
+Yet, across the political spectrum, leaders defaulted to their traditional corners rather than confront the sheer complexity of Egypt's political, social, and economic problems.
+The Brothers were in charge, but it was still Mubarak's Egypt: whoever ruled could do so without regard to anyone who might disagree.
+"""

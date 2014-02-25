@@ -35,8 +35,10 @@ function getWordFreq($tags){
 }
 
 function getWordSort($tags){
-    
+
+    global $check_list;
     $words = array();
+
     foreach ($tags as $key_word => $data){
         if(array_key_exists($data[0], $words)){
             $prop = $words[$data[0]];
@@ -46,7 +48,9 @@ function getWordSort($tags){
         else{
             $prop[0] = 1;
             $prop[1] = $data[1];
-            $words[$data[0]] = $prop;
+            if(in_array($data[1], $check_list)){
+                $words[$data[0]] = $prop;
+            }
         }
     }
 
@@ -80,5 +84,37 @@ function getTaggedSentence($tags){
     $tag_str .= "</h4>";
     return $tag_str;
 }
+
+
+
+function getPointedText($text, $tags){
+
+    $arr = explode(".", $text);
+    foreach($arr as $key =>  $line){
+        foreach($tags as $tag){
+            if( strripos($line, $tag) !== false){
+                $arr[$key] = "<span class='text-success'>".$line."</span>";
+            } 
+        }
+    }
+    
+    foreach($arr as $key =>  $line){
+        $count = 0;
+        foreach($tags as $tag){
+            if( strripos($line, $tag) !== false){
+                $arr[$key] = str_ireplace($tag,"<span class='text-success'>$tag</span>",$line);
+                //$arr[$key] = "<span class='text-success'>".$line."</span>";
+                $count++;
+            } 
+        }
+        if($count > (count($tags) - 2)){
+            //$arr[$key] = str_replace("text-success","text-danger",$line);
+        }
+    }
+
+
+    $text = implode(".",$arr);
+    return $text;
+} 
 
 ?>
