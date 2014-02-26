@@ -1,6 +1,6 @@
 <?php
 
-$check_list = array("CD","EX","JJ","JJR", "JJS","MD","NN","NNS","NNPS","PDT","PRP","RBR","RBS","VB","VBD","VBG","VBN","VBP","VBZ","WDT","WP","WP$","WRB");
+$check_list = array("CD","EX","JJ","JJR", "JJS","MD","NN","NNS","NNPS","NNP","PDT","PRP","RBR","RBS","VB","VBD","VBG","VBN","VBP","VBZ","WDT","WP","WP$","WRB");
 
 function getWords(){
 
@@ -88,12 +88,14 @@ function getTaggedSentence($tags){
 
 
 function getPointedText($text, $tags){
-
+    
+    $tags[] = "Egypt's";
     $arr = explode(".", $text);
     foreach($arr as $key =>  $line){
         foreach($tags as $tag){
             if( strripos($line, $tag) !== false){
-                $arr[$key] = "<span class='text-success'>".$line."</span>";
+                //$arr[$key] = str_ireplace($tag,"<strong><span class='text-danger'>$tag</span></strong>",$line);
+                //$arr[$key] = "<span class='text-success'>".$line."</span>";
             } 
         }
     }
@@ -102,12 +104,13 @@ function getPointedText($text, $tags){
         $count = 0;
         foreach($tags as $tag){
             if( strripos($line, $tag) !== false){
-                $arr[$key] = str_ireplace($tag,"<span class='text-success'>$tag</span>",$line);
-                //$arr[$key] = "<span class='text-success'>".$line."</span>";
+                //$arr[$key] = str_ireplace($tag,"<span class='text-success'>$tag</span>",$line);
+                $arr[$key] = "<span class='text-success'>".$line."</span>";
                 $count++;
             } 
         }
-        if($count > (count($tags) - 2)){
+        if($count  >  (count($tags) - 1)){
+            $arr[$key] = "<span class='text-danger'>".$line."</span>";
             //$arr[$key] = str_replace("text-success","text-danger",$line);
         }
     }
@@ -117,4 +120,45 @@ function getPointedText($text, $tags){
     return $text;
 } 
 
+
+function reddit($text, $tags){
+
+    $nn1 = false; $nn2 = false; 
+    $jj = false; 
+
+    foreach($tags as $tag => $prop){
+
+        $pos = $prop[1];
+        if( $pos == "NNP" || $pos == "NNPS"){
+            if(!$nn1)  $nn = $tag; 
+            else {
+                if(!$nn2) $nn2 = $tag; 
+            }
+        }        
+
+        if( $pos == "JJ" || $pos == "JJR" || $pos = "JJS"){
+            if(!$jj) $jj = $tag;
+        }
+
+        if($jj && $nn1 && $nn2) break;
+    }
+
+
+    $arr = explode(".", $text);
+    foreach($arr as $key =>  $line){
+        if(startsWith($line, $nn1)){
+            $arr[$key] = "<span class='text-danger'>".$line."</span>";
+        }  
+
+        if( (strripos($line, $nn1) !== false) && (strripos($line, $jj) !== false)){
+            $arr[$key] = "<span class='text-danger'>".$line."</span>";
+        }
+    }
+}
+
+
+function startsWith($haystack, $needle)
+{
+        return $needle === "" || strpos($haystack, $needle) === 0;
+}
 ?>

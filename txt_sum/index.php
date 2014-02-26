@@ -67,7 +67,7 @@ echo "</ol>";
 <?
 
 echo "<div class='section'><div class='container'>";
-echo "<h5>$raw_text</h5>";
+echo "<h4>$raw_text</h4>";
 echo "</div></div>";
 
 $tag_str = getTaggedSentence($tags);
