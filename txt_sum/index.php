@@ -15,7 +15,10 @@ $contents = getWords();
 $words_data = json_decode($contents, true);
 $tags = $words_data["tags"];
 $raw_text = $words_data["para"];
-$raw_text = getPointedText($raw_text, $tags_element);
+$highlighted_text = getPointedText($raw_text, $tags_element);
+$summarisedText = summeriseBot($raw_text, getWordSort($tags));
+
+$reddit =  reddit($raw_text, getWordSort($tags));
 
 include "header.php";
 ?>
@@ -52,7 +55,7 @@ foreach($words as $key => $data){
     echo "<h4>$key<small>[{$data[0]}] ({$data[1]}) </small><h4>";
     echo "</label></div>";
     echo "</li>";
-}    
+}
 echo "</ol>";
 ?>
 </form>
@@ -67,7 +70,9 @@ echo "</ol>";
 <?
 
 echo "<div class='section'><div class='container'>";
-echo "<h4>$raw_text</h4>";
+//echo "<h4>$reddit</h4>";
+echo "$summarisedText";
+//echo "<h4>$highlighted_text</h4>";
 echo "</div></div>";
 
 $tag_str = getTaggedSentence($tags);
@@ -75,7 +80,7 @@ echo "<div class='section'><div class='container'>";
 echo $tag_str;
 echo "</div></div>";
 
-$str = texttagReplace($tags, $raw_text); 
+$str = texttagReplace($tags, $raw_text);
 echo "<div class='section'><div class='container'>";
 echo $str;
 echo "</div></div>";
