@@ -52,7 +52,7 @@ echo "<ol>";
 foreach($words as $key => $data){
     echo "<li>";
     echo "<div class='checkbox'><label><input type='checkbox' name='tags[]' value='$key'>";
-    echo "<h4>$key<small>[{$data[0]}] ({$data[1]}) </small><h4>";
+    echo "<h4>$key<small>[{$data[0]}] ({$data[1]}) </small><h4><p><small> {$adj_words[$key][3]} </small></p>";
     echo "</label></div>";
     echo "</li>";
 }

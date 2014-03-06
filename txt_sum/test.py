@@ -51,6 +51,8 @@ sentence = "Many local level and area-level committees of the party were shaken 
 #print wn.synsets("dog", "VERB")
 print "\n\n"
 
+tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+
 datasource = urlopen("raw_text.txt").read()
 sentence  = nltk.clean_html(datasource)
 sentence = sentence.decode('utf8')
@@ -68,6 +70,8 @@ json_hash = {}
 json_hash["para"] = sentence
 json_hash["tags"] = tagged
 json_hash["syn"] = syn
+
+json_hash["para"] =  '\n'.join(tokenizer.tokenize(json_hash["para"]))
 
 FILE = open("corp.json", "w+")
 FILE.write(json.dumps(json_hash))

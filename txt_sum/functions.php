@@ -1,8 +1,8 @@
 <?php
 
 $check_list = array("CD","EX","JJ","JJR", "JJS","MD","NN","NNS","NNPS","NNP","PDT","PRP","RBR","RBS","VB","VBD","VBG","VBN","VBP","VBZ","WDT","WP","WP$","WRB");
-$removed_tags = array("are","is","that","such","have","will", "the", "they");
-
+$removed_tags = array("are","is","that","such","have","will", "the", "they", "The", "has","he", "be","we","it");
+$adj_words = array();
 $reddit_link = "http://www.reddit.com/user/tldrrr";
 
 function getWords(){
@@ -39,22 +39,70 @@ function getWordFreq($tags){
 
 function getWordSort($tags){
 
-    global $check_list;
+    global $check_list, $removed_tags, $adj_words;
     $words = array();
 
+
     foreach ($tags as $key_word => $data){
+
         if(array_key_exists($data[0], $words)){
             $prop = $words[$data[0]];
             $prop[0]++;
-            $words[$data[0]] = $prop;
         }
         else{
             $prop[0] = 1;
             $prop[1] = $data[1];
-            if(in_array($data[1], $check_list)){
+        }
+        
+        if(array_key_exists($data[0], $adj_words)){
+            $adj = $adj_words[$data[0]];
+        }
+        else{
+            $adj = array();
+        }
+        $pre_key = $key_word - 1;
+        $pre_data = $tags[$pre_key];
+        if($pre_data){
+            if(array_key_exists($pre_data[0], $adj[0])){
+                $adj[0][$pre_data[0]] += 1;
+            }
+            else{
+                $adj[0][$pre_data[0]] = 1;
+            }
+        }
+        $post_key = $key_word + 1;
+        $post_data = $tags[$post_key];
+
+        if($post_data){
+            if(array_key_exists($post_data[0], $adj[1])){
+                $adj[1][$post_data[0]] += 1;
+            }
+            else{
+                $adj[1][$post_data[0]] = 1;
+            }
+        }
+
+        $adj_words[$data[0]] = $adj;
+
+        if(in_array($data[1], $check_list)){
+            if(!in_array($data[0], $removed_tags)){
                 $words[$data[0]] = $prop;
             }
         }
+    }
+    
+    foreach($adj_words as $word => $adj) {
+        $str = "";
+        foreach($adj[0] as $pre_key => $value){
+            $str .= "$pre_key($value), ";
+        }
+        $str .= "/";
+        foreach($adj[1] as $post_key => $value){
+            $str .= "$post_key($value), ";
+        }
+        $adj[3] = $str;
+        //echo "key -> $word -> $str <br>" ;
+        $adj_words[$word] = $adj;
     }
 
     foreach($words as $key => $row) {
@@ -202,7 +250,7 @@ function summeriseBot($text, $tags){
     }
 
     $points = array(); $order =0;
-    $arr = explode(".", $text);
+    $arr = explode("\n", $text);
     foreach($arr as $key =>  $line){
         foreach($pos_tags as $key => $data){
             if( strripos($line, $data["tag"]) !== false){
@@ -210,6 +258,16 @@ function summeriseBot($text, $tags){
             }
         }
     }
+
+
+    /*foreach($points as $line => $data){
+        $teaser_form = array();
+        if( strripos($line, $pos_tags["JJ1"]) !== false){
+            if(!$teaser_form["jj1"]) = $line;
+        }
+    }*/
+
+
     $str = "<ol>";
     foreach ($points as $line => $data){
         foreach($data as $pos => $prop){
